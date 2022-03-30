@@ -18,5 +18,10 @@ namespace Automaten
             Amount = amount;
             Price = price;
         }
+
+        public override string ToString()
+        {
+            return $"Name: {Name} | Price: {Price} | Amount: {Amount}";
+        }
     }
 }

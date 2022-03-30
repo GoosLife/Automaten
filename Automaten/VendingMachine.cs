@@ -35,7 +35,11 @@ namespace Automaten
 
             // Check that customer has inserted enough cash to pay for the ware
             if (!(cashPaid >= ware.Price))
-                return $"The product price is {ware.Price}. Please insert another {ware.Price - cashPaid}";
+            {
+                // Give customer their money back - although it doesn't practically do anything in this case, it is still important that the customer gets their money back upon an unsuccesful transaction.
+                CancelOrder(cashPaid);
+                return $"The product price is {ware.Price}. Please insert the full amount before proceeding with the purchase.";
+            }
 
             // Simulate giving the user the product by subtracting the purchased ware from the inventory.
             GiveProduct(wareIndex);
@@ -47,7 +51,7 @@ namespace Automaten
             int change = GiveChange(ware.Price, cashPaid);
 
             // Tell user purchase succeeded and how much change they're getting back.
-            return $"Purchase of {ware} successful.\nChange: {change}.";
+            return $"Purchase of {ware.Name} successful.\nChange: {change}.";
         }
 
         /// <summary>
@@ -80,6 +84,20 @@ namespace Automaten
         {
             CashBalance -= (cashPaid - price);
             return (cashPaid - price);
+        }
+
+        public string ListWares()
+        {
+            string wares = "";
+
+            for (int i = 0; i < Inventory.Count; i++)
+            {
+                // Only list those wares that are actually present in the machine as choices.
+                if (Inventory[i].Amount > 0)
+                    wares += i + ". " + Inventory[i] + "\n";
+            }
+
+            return wares;
         }
     }
 }
